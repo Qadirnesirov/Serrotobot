@@ -1,78 +1,116 @@
-# Create a new config.py or rename this to config.py file in same dir and import, then extend this class.
+# Yeni config.py yaradın və ya onun adını eyni dir və idxalda config.py faylı olaraq dəyişdirin, sonra bu sinfi genişləndirin.
 import json
 import os
 
 
 
 def get_user_list(config, key):
-    with open("{}/AstrakoBot/{}".format(os.getcwd(), config), "r") as json_file:
+    with open("{}/SerroToBoT/{}".format(os.getcwd(), config), "r") as json_file:
         return json.load(json_file)[key]
 
 
-# Create a new config.py or rename this to config.py file in same dir and import, then extend this class.
+# Yeni config.py yaradın və ya onun adını eyni dir və idxalda config.py faylı olaraq dəyişdirin, sonra bu sinfi genişləndirin.
+
 class Config(object):
     LOGGER = True
-    # REQUIRED
-    # Login to https://my.telegram.org and fill in these slots with the details given by it
-
-    API_ID = 123456  # integer value, dont use ""
-    API_HASH = "awoo"
-    TOKEN = "BOT_TOKEN"  # This var used to be API_KEY but it is now TOKEN, adjust accordingly.
-    OWNER_ID = 123456789  # If you dont know, run the bot and do /id in your private chat with it, also an integer
-    OWNER_USERNAME = "awoo"
-    SUPPORT_CHAT = "awoo"  # Your own group for support, do not add the @
+    # TƏLƏB OLUNUR
+    # https://my.telegram.org saytına daxil olun və onun verdiyi təfərrüatlarla bu slotları doldurun
+    
+    API_ID = 24066716  # integer value, dont use ""
+    API_HASH = "09e30e6e0b1a4c71e43a055979c51b3b"
+    TOKEN = "6622010568:AAFf-aMN92QLGBedBNQUYs4S_8TYIXm02gA" 
+    
+   # Bu var API_KEY idi, lakin indi TOKEN-dir, uyğun olaraq tənzimləyin.
+   
+    OWNER_ID = 123456789 
+    
+    # Əgər bilmirsinizsə, botu işə salın və onunla şəxsi söhbətinizdə /id edin, həm də tam ədəd
+    
+    OWNER_USERNAME = "otobotowner"
+    SUPPORT_CHAT = "otobotsport"
+    
+    # Dəstək üçün öz qrupunuz, @ əlavə etməyin
+    
     JOIN_LOGGER = (
-        -1234567890123
-    )  # Prints any new group the bot is added to, prints just the name and ID.
+        -1002096806763
+        
+    ) 
+    # Botun əlavə olunduğu hər hansı yeni qrupu çap edir, yalnız adı və şəxsiyyəti çap edir.
+    
     EVENT_LOGS = (
-        -1234567890123
-    )  # Prints information like gbans, sudo promotes, AI enabled disable states that may help in debugging and shit
+        -1002096806763
+   
+   # Botun əlavə olunduğu hər hansı yeni qrupu çap edir, yalnız adı və şəxsiyyəti çap edir.
+   
     ALLOW_CHATS = True
 
-    # RECOMMENDED
-    SQLALCHEMY_DATABASE_URI = "something://somewhat:user@hosturl:port/databasename"  # needed for any database modules
-    DB_NAME = "databasename"  # needed for cron_jobs module, use same databasename from SQLALCHEMY_DATABASE_URI
+    # TÖVSİYƏ
+    
+    SQLALCHEMY_DATABASE_URI = "mongodb+srv://nesirovq1997:qadir1997@cluster0.pavador.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0" 
+   
+    # istənilən verilənlər bazası modulları üçün lazımdır
+    
+    DB_NAME = "nesirovq1997"  
+    
+    # cron_jobs modulu üçün lazımdır, SQLALCHEMY_DATABASE_URI-dən eyni verilənlər bazası adından istifadə edin
+    
     LOAD = []
     NO_LOAD = ["rss", "cleaner", "connection", "math"]
     WEBHOOK = False
     INFOPIC = True
     URL = None
-    SPAMWATCH_API = ""  # go to support.spamwat.ch to get key
-    SPAMWATCH_SUPPORT_CHAT = "@SpamWatchSupport"
-    WEATHER_API = ""  # go to openweathermap.org/api to get key
+    SPAMWATCH_API = "KYwCk3Q5dCy2wQnfQk0f785GqAxfFC2X3qkrEsCcbiOAyOINVQ3_W04u0cFBLMnS"  
+    # açarı əldə etmək üçün support.spamwat.ch saytına daxil olun
+    
+    SPAMWATCH_SUPPORT_CHAT = "@otobotsport"
+    WEATHER_API = "40fbf20f71e48ffe889014e901afa7db"
+    #açarı əldə etmək üçün openweathermap.org/api saytına daxil olun
 
-    # OPTIONAL
-    ##List of id's -  (not usernames) for users which have sudo access to the bot.
+    # OPSİYONAL
+    ##Bota sudo girişi olan istifadəçilər üçün id-lərin siyahısı - (istifadəçi adları deyil).
     SUDO_USERS = get_user_list("elevated_users.json", "sudos")
-    ##List of id's - (not usernames) for developers who will have the same perms as the owner
+    ##İdentifikatorların siyahısı - sahibi ilə eyni icazələrə malik olan tərtibatçılar üçün (istifadəçi adları deyil).
     DEV_USERS = get_user_list("elevated_users.json", "devs")
-    ##List of id's (not usernames) for users which are allowed to gban, but can also be banned.
+    ##Gban-a icazə verilən, lakin qadağan edilə bilən istifadəçilər üçün id-lərin (istifadəçi adlarının deyil) siyahısı.
     SUPPORT_USERS = get_user_list("elevated_users.json", "supports")
-    # List of id's (not usernames) for users which WONT be banned/kicked by the bot.
+    # Bot tərəfindən qadağan olunmayan /kicked qovulmayan istifadəçilər üçün id-lərin (istifadəçi adlarının deyil) siyahısı.
     WHITELIST_USERS = get_user_list("elevated_users.json", "whitelists")
     DONATION_LINK = None  # EG, paypal
     CERT_PATH = None
     PORT = 5000
-    DEL_CMDS = True  # Delete commands that users dont have access to, like delete /ban if a non admin uses it.
+    DEL_CMDS = True 
+    # İstifadəçilərin daxil ola bilmədiyi əmrləri silin, məsələn, qeyri-inzibatçı istifadə edərsə, silmək /ban qadağan etmək.
     STRICT_GBAN = True
     WORKERS = (
-        8  # Number of subthreads to use. Set as number of threads your processor uses
+        8 
+        # İstifadə ediləcək alt başlıqların sayı. Prosessorunuzun istifadə etdiyi iplərin sayı kimi təyin edin
     )
-    BAN_STICKER = ""  # banhammer marie sticker id, the bot will send this sticker before banning or kicking a user in chat.
-    ALLOW_EXCL = True  # Allow ! commands as well as / (Leave this to true so that blacklist can work)
+    BAN_STICKER = "🤖" 
+    # banhammer marie stiker id-si olduqda, bot bu stikeri söhbətdə istifadəçini qadağan etmədən və ya təpikləməzdən əvvəl göndərəcək.
+    
+    ALLOW_EXCL = True 
+    # İcazə verin! əmrləri, eləcə də / (Qara siyahının işləməsi üçün bunu doğru olaraq buraxın)
     CASH_API_KEY = (
-        "awoo"  # Get your API key from https://www.alphavantage.co/support/#api-key
+        "0JNDO94L7GPKW3PH"  
+        # API açarınızı https://www.alphavantage.co/support/#api-key saytından əldə edin
     )
-    TIME_API_KEY = "awoo"  # Get your API key from https://timezonedb.com/api
+    TIME_API_KEY = "<font style="vertical-align: inherit;"><font style="vertical-align: inherit;">http://api.timezonedb.com/v2.1/list-time-zone</font></font>" 
+   # API açarınızı https://timezonedb.com/api saytından əldə edin
     WALL_API = (
-        "awoo"  # For wallpapers, get one from https://pixabay.com/api/docs
+        "42806009-09039b4e09c1bdbd7bdd42170" 
+        # Divar kağızları üçün https://pixabay.com/api/docs ünvanından birini əldə edin
     )
-    AI_API_KEY = "awoo"  # For chatbot, get one from https://coffeehouse.intellivoid.net/dashboard
-    BL_CHATS = []  # List of groups that you want blacklisted.
+    AI_API_KEY = "mongodb+srv://nesirovq1997:qadir1997@cluster0.pavador.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0" 
+    # Çatbot üçün https://coffeehouse.intellivoid.net/dashboard saytından birini əldə edin
+    
+    BL_CHATS = [] 
+    # Qara siyahıya salınmasını istədiyiniz qrupların siyahısı.
     SPAMMERS = None
     
-    BACKUP_PASS = "12345" # The password used for the cron backups zip
-    DROP_UPDATES = False # whether to drop the pending updates or not
+    BACKUP_PASS = "19970202" 
+    # Cron ehtiyat nüsxələri üçün istifadə edilən parol zip
+    DROP_UPDATES = False
+    # gözləyən yeniləmələri buraxıb-yatırmamaq
 
 class Production(Config):
     LOGGER = True
