@@ -9,12 +9,12 @@ import emoji
 from telegram import MessageEntity
 from telegram.utils.helpers import escape_markdown
 
-# NOTE: the url \ escape may cause double escapes
-# match * (bold) (don't escape if in url)
-# match _ (italics) (don't escape if in url)
-# match ` (code)
-# match []() (markdown link)
-# else, escape *, _, `, and [
+# QEYD: url \ escape ikiqat qaçışlara səbəb ola bilər 
+# uyğun * (qalın) (url-də olarsa qaçmayın) 
+# uyğunluq _ (kursiv) (url-də olarsa qaçmayın) 
+# uyğunluq ` (kod) 
+# uyğunluq []() (işarələmə linki) 
+# başqa, escape *, _, `, və [
 MATCH_MD = re.compile(
     r"\*(.*?)\*|"
     r"_(.*?)_|"
@@ -30,12 +30,13 @@ BTN_URL_REGEX = re.compile(r"(\[([^\[]+?)\]\(buttonurl:(?:/{0,2})(.+?)(:same)?\)
 
 def _selective_escape(to_parse: str) -> str:
     """
-    Escape all invalid markdown
+    Bütün etibarsız işarələrdən qaçın
 
-    :param to_parse: text to escape
-    :return: valid markdown string
+    :param to_parse: qaçmaq üçün mətn
+    :qayıt: etibarlı işarələmə sətri
     """
-    offset = 0  # offset to be used as adding a \ character causes the string to shift
+    offset = 0 
+    # \ simvolunun əlavə edilməsi kimi istifadə ediləcək ofset sətrin sürüşməsinə səbəb olur
     for match in MATCH_MD.finditer(to_parse):
         if match.group("esc"):
             ent_start = match.start()
