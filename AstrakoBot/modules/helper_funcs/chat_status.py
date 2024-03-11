@@ -2,7 +2,7 @@ from time import perf_counter
 from functools import wraps
 from cachetools import TTLCache
 from threading import RLock
-from AstrakoBot import (
+from SerroToBoT import (
     DEL_CMDS,
     OWNER_ID,
     DEV_USERS,
@@ -16,7 +16,7 @@ from AstrakoBot import (
 from telegram import Chat, ChatMember, ParseMode, Update
 from telegram.ext import CallbackContext
 
-# stores admemes in memory for 10 min.
+# admemləri 10 dəqiqə yaddaşda saxlayır.
 ADMIN_CACHE = TTLCache(maxsize=512, ttl=60 * 10, timer=perf_counter)
 THREAD_LOCK = RLock()
 
@@ -40,17 +40,18 @@ def is_user_admin(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
         or user_id in DEV_USERS
         or chat.all_members_are_administrators
         or user_id in [1087968824]
-    ):  # Count telegram and Group Anonymous as admin
+    ):  
+      # Telegram və Qrup Anonimini admin olaraq sayın
         return True
     if not member:
         with THREAD_LOCK:
-            # try to fetch from cache first.
+            # əvvəlcə keşdən götürməyə çalışın.
             try:
                 return user_id in ADMIN_CACHE[chat.id]
             except KeyError:
-                # keyerror happend means cache is deleted,
-                # so query bot api again and return user status
-                # while saving it in cache for future useage...
+               # açar səhvi baş verdi, keş silindi, 
+               # beləliklə, bot api-ni yenidən sorğulayın və istifadəçi statusunu qaytarın 
+               # gələcək istifadə üçün onu keşdə saxlayarkən...
                 chat_admins = dispatcher.bot.getChatAdministrators(chat.id)
                 admin_list = [x.user.id for x in chat_admins]
                 ADMIN_CACHE[chat.id] = admin_list
@@ -82,7 +83,8 @@ def is_user_ban_protected(chat: Chat, user_id: int, member: ChatMember = None) -
         or user_id in WHITELIST_USERS
         or chat.all_members_are_administrators
         or user_id in [1087968824]
-    ):  # Count telegram and Group Anonymous as admin
+    ):  
+      # Telegram və Qrup Anonimini admin olaraq sayın
         return True
 
     if not member:
@@ -113,8 +115,8 @@ def owner_plus(func):
                 pass
         else:
             update.effective_message.reply_text(
-                "This is a restricted command."
-                " You do not have permissions to run this."
+                "Bu, məhdudlaşdırılmış əmrdir." 
+                "Bunu idarə etmək üçün icazəniz yoxdur."
             )
 
     return is_owner_plus_func
@@ -137,8 +139,8 @@ def dev_plus(func):
                 pass
         else:
             update.effective_message.reply_text(
-                "This is a developer restricted command."
-                " You do not have permissions to run this."
+                "Bu, developer tərəfindən məhdudlaşdırılmış əmrdir." 
+                "Bunu idarə etmək üçün icazəniz yoxdur."
             )
 
     return is_dev_plus_func
@@ -174,7 +176,7 @@ def sudo_plus(func):
                 pass
         else:
             update.effective_message.reply_text(
-                "Who dis non-admin telling me what to do? You want a punch?"
+                "Admin olmayan kim mənə nə edəcəyimi söyləyir? Yumruq istəyirsən?"
             )
 
     return is_sudo_plus_func
@@ -211,7 +213,7 @@ def whitelist_plus(func):
             return func(update, context, *args, **kwargs)
         else:
             update.effective_message.reply_text(
-                f"You don't have access to use this.\nVisit @{SUPPORT_CHAT}"
+                f"İstifadəyə girişiniz yoxdur this.\nVisit @{SUPPORT_CHAT}"
             )
 
     return is_whitelist_plus_func
@@ -235,7 +237,7 @@ def user_admin(func):
                 pass
         else:
             update.effective_message.reply_text(
-                "Who dis non-admin telling me what to do? You want a punch?"
+                "Admin olmayan kim mənə nə edəcəyimi söyləyir? Yumruq istəyirsən?"
             )
 
     return is_admin
@@ -287,9 +289,9 @@ def bot_admin(func):
         message_chat_title = update.effective_message.chat.title
 
         if update_chat_title == message_chat_title:
-            not_admin = "I'm not admin! - REEEEEE"
+            not_admin = "men admin deyilem! - REEEEEE"
         else:
-            not_admin = f"I'm not admin in <b>{update_chat_title}</b>! - REEEEEE"
+            not_admin = f"men admin deyilem <b>{update_chat_title}</b>! - REEEEEE"
 
         if is_bot_admin(chat, bot.id):
             return func(update, context, *args, **kwargs)
@@ -308,9 +310,9 @@ def bot_can_delete(func):
         message_chat_title = update.effective_message.chat.title
 
         if update_chat_title == message_chat_title:
-            cant_delete = "I can't delete messages here!\nMake sure I'm admin and can delete other user's messages."
+            cant_delete = "Burada mesajları silə bilmirəm!\nAdmin olduğuma və digər istifadəçinin mesajlarını silə biləcəyimə əmin olun."
         else:
-            cant_delete = f"I can't delete messages in <b>{update_chat_title}</b>!\nMake sure I'm admin and can delete other user's messages there."
+            cant_delete = f"Mən <b>{update_chat_title}</b>-də mesajları silə bilmirəm!\nAdmin olduğuma və digər istifadəçinin mesajlarını oradan silə biləcəyimə əmin olun."
 
         if can_delete(chat, bot.id):
             return func(update, context, *args, **kwargs)
@@ -330,10 +332,10 @@ def can_pin(func):
 
         if update_chat_title == message_chat_title:
             cant_pin = (
-                "I can't pin messages here!\nMake sure I'm admin and can pin messages."
+                "Mesajları bura sanclaya bilmirəm!\nAdmin olduğuma və mesajları sanclaya bildiyimə əmin olun."
             )
         else:
-            cant_pin = f"I can't pin messages in <b>{update_chat_title}</b>!\nMake sure I'm admin and can pin messages there."
+            cant_pin = f"Mən <b>{update_chat_title}</b> daxilində mesajları sanclaya bilmirəm!\nAdmin olduğuma və mesajları orada sanclaya biləcəyimə əmin olun."
 
         if chat.get_member(bot.id).can_pin_messages:
             return func(update, context, *args, **kwargs)
@@ -352,11 +354,10 @@ def can_promote(func):
         message_chat_title = update.effective_message.chat.title
 
         if update_chat_title == message_chat_title:
-            cant_promote = "I can't promote/demote people here!\nMake sure I'm admin and can appoint new admins."
+            cant_promote = "bacarıram promote/demote insanlar burada!\nAmin olun ki, mən adminəm və yeni adminlər təyin edə bilərəm."
         else:
             cant_promote = (
-                f"I can't promote/demote people in <b>{update_chat_title}</b>!\n"
-                f"Make sure I'm admin there and can appoint new admins."
+                f"bacarıram promote/demote <b>{update_chat_title}</b> daxilində olan insanlar!\n" f"Orada admin olduğuma və yeni adminlər təyin edə biləcəyimə əmin olun."
             )
 
         if chat.get_member(bot.id).can_promote_members:
@@ -376,9 +377,9 @@ def can_restrict(func):
         message_chat_title = update.effective_message.chat.title
 
         if update_chat_title == message_chat_title:
-            cant_restrict = "I can't restrict people here!\nMake sure I'm admin and can restrict users."
+            cant_restrict = "Mən burada insanları məhdudlaşdıra bilmərəm!\nAmin olun ki, mən adminəm və istifadəçiləri məhdudlaşdıra bilərəm."
         else:
-            cant_restrict = f"I can't restrict people in <b>{update_chat_title}</b>!\nMake sure I'm admin there and can restrict users."
+            cant_restrict = f"Mən <b>{update_chat_title}</b> daxilində insanları məhdudlaşdıra bilmərəm!\nOrada admin olduğuma və istifadəçiləri məhdudlaşdıra biləcəyimə əmin olun."
 
         if chat.get_member(bot.id).can_restrict_members:
             return func(update, context, *args, **kwargs)
@@ -402,7 +403,7 @@ def user_can_ban(func):
             and user not in [1087968824]
         ):
             update.effective_message.reply_text(
-                "Sorry son, but you're not worthy to wield the banhammer."
+                "Bağışla oğlum, amma sən banhammeri istifadə etməyə layiq deyilsən."
             )
             return ""
         return func(update, context, *args, **kwargs)
@@ -428,7 +429,7 @@ def connection_status(func):
         else:
             if update.effective_message.chat.type == "private":
                 update.effective_message.reply_text(
-                    "Send /connect in a group that you and I have in common first."
+                    "Send /connect ilk olaraq sizinlə mənim ortaq olduğumuz qrupda."
                 )
                 return connected_status
 
@@ -437,7 +438,8 @@ def connection_status(func):
     return connected_status
 
 
-# Workaround for circular import with connection.py
-from AstrakoBot.modules import connection
+# connection.py ilə dairəvi idxal üçün həll yolu
+
+from SerroToBoT.modules import connection
 
 connected = connection.connected
