@@ -1,1 +1,1 @@
-"""Helpers, also known as Utilities."""
+"""Köməkçilər, həmçinin Utilities kimi tanınır."""
