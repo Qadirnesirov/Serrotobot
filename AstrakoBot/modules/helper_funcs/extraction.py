@@ -1,7 +1,7 @@
 from typing import List, Optional
 
-from AstrakoBot import LOGGER
-from AstrakoBot.modules.users import get_user_id
+from SerroToBoT import LOGGER
+from SerroToBoT.modules.users import get_user_id
 from telegram import Message, MessageEntity
 from telegram.error import BadRequest
 
@@ -30,7 +30,8 @@ def extract_user_and_text(
     split_text = message.text.split(None, 1)
 
     if len(split_text) < 2:
-        return id_from_reply(message)  # only option possible
+        return id_from_reply(message)  
+        # yeganə variant mümkündür
 
     text_to_parse = split_text[1]
 
@@ -38,7 +39,7 @@ def extract_user_and_text(
 
     entities = list(message.parse_entities([MessageEntity.TEXT_MENTION]))
     ent = entities[0] if entities else None
-    # if entity offset matches (command end/text start) then all good
+    # obyekt ofset uyğun gəlirsə (əmr sonu/mətn başlanğıcı), onda hər şey yaxşıdır
     if entities and ent and ent.offset == len(message.text) - len(text_to_parse):
         ent = entities[0]
         user_id = ent.user.id
@@ -49,8 +50,8 @@ def extract_user_and_text(
         user_id = get_user_id(user)
         if not user_id:
             message.reply_text(
-                "No idea who this user is. You'll be able to interact with them if "
-                "you reply to that person's message instead, or forward one of that user's messages."
+                "Bu istifadəçinin kim olduğu barədə məlumat yoxdur. Əgər onlar ilə əlaqə saxlaya bilərsiniz"
+                "əvəzinə həmin şəxsin mesajına cavab verirsiniz və ya həmin istifadəçinin mesajlarından birini yönləndirirsiniz."
             )
             return None, None
 
@@ -75,14 +76,14 @@ def extract_user_and_text(
     try:
         message.bot.get_chat(user_id)
     except BadRequest as excp:
-        if excp.message in ("User_id_invalid", "Chat not found"):
+        if excp.message in ("User_id_invalid", "Çat tapılmadı"):
             message.reply_text(
-                "I don't seem to have interacted with this user before - please forward a message from "
-                "them to give me control! (like a voodoo doll, I need a piece of them to be able "
-                "to execute certain commands...)"
+                "Deyəsən, bu istifadəçi ilə daha əvvəl əlaqə saxlamamışam - lütfən, ondan mesaj göndərin"
+                "mənə nəzarət etsinlər! (vudu kuklası kimi, bacarmaq üçün onlardan bir parça lazımdır"
+                "müəyyən əmrləri yerinə yetirmək üçün...)"
             )
         else:
-            LOGGER.exception("Exception %s on user %s", excp.message, user_id)
+            LOGGER.exception("%s istifadəçisində istisna %s", excp.message, user_id)
 
         return None, None
 
@@ -104,7 +105,9 @@ def extract_unt_fedban(
     split_text = message.text.split(None, 1)
 
     if len(split_text) < 2:
-        return id_from_reply(message)  # only option possible
+        return id_from_reply(message)
+      
+        # yeganə variant mümkündür
 
     text_to_parse = split_text[1]
 
@@ -112,7 +115,7 @@ def extract_unt_fedban(
 
     entities = list(message.parse_entities([MessageEntity.TEXT_MENTION]))
     ent = entities[0] if entities else None
-    # if entity offset matches (command end/text start) then all good
+    # obyekt ofset uyğun gəlirsə (əmr sonu/mətn başlanğıcı), onda hər şey yaxşıdır
     if entities and ent and ent.offset == len(message.text) - len(text_to_parse):
         ent = entities[0]
         user_id = ent.user.id
@@ -123,8 +126,8 @@ def extract_unt_fedban(
         user_id = get_user_id(user)
         if not user_id and not isinstance(user_id, int):
             message.reply_text(
-                "I don't have that user in my db.  "
-                "You'll be able to interact with them if you reply to that person's message instead, or forward one of that user's messages."
+                "Mənim DB-də o istifadəçi yoxdur."
+                "Əvəzində həmin şəxsin mesajına cavab versəniz və ya həmin istifadəçinin mesajlarından birini yönləndirsəniz, onlarla əlaqə saxlaya biləcəksiniz."
             )
             return None, None
 
@@ -149,16 +152,16 @@ def extract_unt_fedban(
     try:
         message.bot.get_chat(user_id)
     except BadRequest as excp:
-        if excp.message in ("User_id_invalid", "Chat not found") and not isinstance(
+        if excp.message in ("User_id_invalid", "Çat tapılmadı") and not isinstance(
             user_id, int
         ):
             message.reply_text(
-                "I don't seem to have interacted with this user before "
-                "please forward a message from them to give me control! "
-                "(like a voodoo doll, I need a piece of them to be able to execute certain commands...)"
+                "Mən əvvəllər bu istifadəçi ilə ünsiyyətdə olmamışam" 
+                "Mənə nəzarət etmək üçün onlardan bir mesaj göndərin!" 
+                "(vudu kuklası kimi, müəyyən əmrləri yerinə yetirmək üçün mənə onlardan bir parça lazımdır...)"
             )
             return None, None
-        elif excp.message != "Chat not found":
+        elif excp.message != "Çat tapılmadı":
             LOGGER.exception("Exception %s on user %s", excp.message, user_id)
             return None, None
         elif not isinstance(user_id, int):
