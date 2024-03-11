@@ -1,5 +1,5 @@
-from AstrakoBot.modules.helper_funcs.telethn import IMMUNE_USERS, telethn
-from AstrakoBot import SUDO_USERS
+from SerroToBot.modules.helper_funcs.telethn import IMMUNE_USERS, telethn
+from SerroToBot import SUDO_USERS
 from telethon.tl.types import ChannelParticipantsAdmins
 
 
@@ -44,11 +44,11 @@ async def is_user_admin(user_id: int, chat_id):
 
 async def saitama_is_admin(chat_id: int):
     status = False
-    AstrakoBot = await telethn.get_me()
+    SerroToBot = await telethn.get_me()
     async for user in telethn.iter_participants(
         chat_id, filter=ChannelParticipantsAdmins
     ):
-        if AstrakoBot.id == user.id:
+        if SerroToBot.id == user.id:
             status = True
             break
     return status
