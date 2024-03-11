@@ -1,7 +1,7 @@
 from time import sleep
 from typing import Dict, List
 
-from AstrakoBot import NO_LOAD
+from SerroToBot import NO_LOAD
 from telegram import MAX_MESSAGE_LENGTH, Bot, InlineKeyboardButton, ParseMode
 from telegram.error import TelegramError
 
@@ -31,7 +31,7 @@ def split_message(msg: str) -> List[str]:
             result.append(small_msg)
             small_msg = line
     else:
-        # Else statement at the end of the for loop, so append the leftover string.
+        # For döngəsinin sonundakı Else ifadəsi, ona görə də qalan sətri əlavə edin.
         result.append(small_msg)
 
     return result
@@ -76,7 +76,7 @@ def send_to_list(
     bot: Bot, send_to: list, message: str, markdown=False, html=False
 ) -> None:
     if html and markdown:
-        raise Exception("Can only send with either markdown or HTML!")
+        raise Exception("Yalnız markdown və ya HTML ilə göndərilə bilər!")
     for user_id in set(send_to):
         try:
             if markdown:
@@ -86,7 +86,8 @@ def send_to_list(
             else:
                 bot.send_message(user_id, message)
         except TelegramError:
-            pass  # ignore users who fail
+            pass
+          # uğursuz istifadəçilərə məhəl qoymayın
 
 
 def build_keyboard(buttons):
