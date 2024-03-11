@@ -5,7 +5,7 @@ from cachetools import TTLCache
 from telegram import Chat, ChatMember, TelegramError, Update
 from telegram.ext import CallbackContext, ChatMemberHandler
 
-from AstrakoBot import SUDO_USERS, dispatcher
+from SerroToBoT import SUDO_USERS, dispatcher
 
 BOT_ADMIN_CACHE = TTLCache(maxsize = 512, ttl = 60 * 30)
 USER_ADMIN_CACHE = TTLCache(maxsize = 512, ttl = 60 * 30)
@@ -27,10 +27,12 @@ def user_is_admin(chat: Chat, user_id: int) -> bool:
 
 	member: ChatMember = get_mem_from_cache(user_id, chat.id)
 
-	if not member:  # not in cache so not an admin
+	if not member: 
+	  # keşdə deyil, ona görə də admin deyil
 		return False
 
-	return member.status in ["administrator", "creator"]  # check if user is admin
+	return member.status in ["administrator", "creator"]  
+	# istifadəçinin admin olub olmadığını yoxlayın
 
 
 def get_mem_from_cache(user_id: int, chat_id: int) -> ChatMember:
