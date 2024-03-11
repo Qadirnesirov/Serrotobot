@@ -1,4 +1,4 @@
-from AstrakoBot import DEV_USERS, SUDO_USERS, SUPPORT_USERS
+from SerroToBot import DEV_USERS, SUDO_USERS, SUPPORT_USERS
 from telegram import Message
 from telegram.ext import MessageFilter
 
