@@ -9,7 +9,7 @@ from telethon import TelegramClient
 
 StartTime = time.time()
 
-# enable logging
+# girişi aktivləşdirin
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("log.txt"), logging.StreamHandler()],
@@ -18,10 +18,10 @@ logging.basicConfig(
 
 LOGGER = logging.getLogger(__name__)
 
-# if version < 3.6, stop bot.
+# versiya <3.6 olarsa, botu dayandırın.
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
     LOGGER.error(
-        "You MUST have a python version of at least 3.6! Multiple features depend on this. Bot quitting."
+        "Ən azı 3.6 python versiyasına sahib olmalısınız! Bir çox xüsusiyyətlər bundan asılıdır. Bot tərk edir."
     )
     quit(1)
 
@@ -33,7 +33,7 @@ if ENV:
     try:
         OWNER_ID = int(os.environ.get("OWNER_ID", None))
     except ValueError:
-        raise Exception("Your OWNER_ID env variable is not a valid integer.")
+        raise Exception("OWNER_ID env dəyişəniniz etibarlı tam ədəd deyil.")
 
     JOIN_LOGGER = os.environ.get("JOIN_LOGGER", None)
     OWNER_USERNAME = os.environ.get("OWNER_USERNAME", None)
@@ -42,24 +42,25 @@ if ENV:
         SUDO_USERS = set(int(x) for x in os.environ.get("SUDO_USERS", "").split())
         DEV_USERS = set(int(x) for x in os.environ.get("DEV_USERS", "").split())
     except ValueError:
-        raise Exception("Your sudo or dev users list does not contain valid integers.")
+        raise Exception("Sudo və ya dev istifadəçilər siyahısında etibarlı tam ədədlər yoxdur.")
 
     try:
         SUPPORT_USERS = set(int(x) for x in os.environ.get("SUPPORT_USERS", "").split())
     except ValueError:
-        raise Exception("Your support users list does not contain valid integers.")
+        raise Exception("Dəstək istifadəçiləri siyahısında etibarlı tam ədədlər yoxdur.")
 
     try:
         WHITELIST_USERS = set(int(x) for x in os.environ.get("WHITELIST_USERS", "").split())
     except ValueError:
-        raise Exception("Your whitelisted users list does not contain valid integers.")
+        raise Exception("Ağ siyahıya salınmış istifadəçilər siyahısında etibarlı tam ədədlər yoxdur.")
 
-        raise Exception("Your whitelisted users list does not contain valid integers.")
+        raise Exception("Ağ siyahıya salınmış istifadəçilər siyahısında etibarlı tam ədədlər yoxdur.")
 
     INFOPIC = bool(os.environ.get("INFOPIC", False))
     EVENT_LOGS = os.environ.get("EVENT_LOGS", None)
     WEBHOOK = bool(os.environ.get("WEBHOOK", False))
-    URL = os.environ.get("URL", "")  # Does not contain token
+    URL = os.environ.get("URL", "") 
+    # Token ehtiva etmir
     PORT = int(os.environ.get("PORT", 5000))
     CERT_PATH = os.environ.get("CERT_PATH")
     API_ID = os.environ.get("API_ID", None)
@@ -89,7 +90,7 @@ if ENV:
     try:
         BL_CHATS = set(int(x) for x in os.environ.get("BL_CHATS", "").split())
     except ValueError:
-        raise Exception("Your blacklisted chats list does not contain valid integers.")
+        raise Exception("Qara siyahıya salınmış söhbətlər siyahısında etibarlı tam ədədlər yoxdur.")
 
 else:
     from AstrakoBot.config import Development as Config
@@ -99,7 +100,7 @@ else:
     try:
         OWNER_ID = int(Config.OWNER_ID)
     except ValueError:
-        raise Exception("Your OWNER_ID variable is not a valid integer.")
+        raise Exception("OWNER_ID dəyişəniniz etibarlı tam ədəd deyil.")
 
     JOIN_LOGGER = Config.JOIN_LOGGER
     OWNER_USERNAME = Config.OWNER_USERNAME
@@ -108,19 +109,19 @@ else:
         SUDO_USERS = set(int(x) for x in Config.SUDO_USERS or [])
         DEV_USERS = set(int(x) for x in Config.DEV_USERS or [])
     except ValueError:
-        raise Exception("Your sudo or dev users list does not contain valid integers.")
+        raise Exception("Sudo və ya dev istifadəçilər siyahısında etibarlı tam ədədlər yoxdur.")
 
     try:
         SUPPORT_USERS = set(int(x) for x in Config.SUPPORT_USERS or [])
     except ValueError:
-        raise Exception("Your support users list does not contain valid integers.")
+        raise Exception("Dəstək istifadəçiləri siyahısında etibarlı tam ədədlər yoxdur.")
 
     try:
         WHITELIST_USERS = set(int(x) for x in Config.WHITELIST_USERS or [])
     except ValueError:
-        raise Exception("Your whitelisted users list does not contain valid integers.")
+        raise Exception("Ağ siyahıya salınmış istifadəçilər siyahısında etibarlı tam ədədlər yoxdur.")
 
-        raise Exception("Your whitelisted users list does not contain valid integers.")
+        raise Exception("Ağ siyahıya salınmış istifadəçilər siyahısında etibarlı tam ədədlər yoxdur.")
 
     EVENT_LOGS = Config.EVENT_LOGS
     WEBHOOK = Config.WEBHOOK
@@ -155,23 +156,23 @@ else:
     try:
         BL_CHATS = set(int(x) for x in Config.BL_CHATS or [])
     except ValueError:
-        raise Exception("Your blacklisted chats list does not contain valid integers.")
+        raise Exception("Qara siyahıya salınmış söhbətlər siyahısında etibarlı tam ədədlər yoxdur.")
 
 SUDO_USERS.add(OWNER_ID)
 DEV_USERS.add(OWNER_ID)
 
 if not SPAMWATCH_API:
     sw = None
-    LOGGER.warning("SpamWatch API key missing! recheck your config.")
+    LOGGER.warning("SpamWatch API açarı çatışmır! konfiqurasiyanızı yenidən yoxlayın.")
 else:
     try:
         sw = spamwatch.Client(SPAMWATCH_API)
     except:
         sw = None
-        LOGGER.warning("Can't connect to SpamWatch!")
+        LOGGER.warning("SpamWatch-ə qoşulmaq mümkün deyil!")
 
 updater = tg.Updater(TOKEN, workers=WORKERS, use_context=True)
-telethn = TelegramClient("AstrakoBot", API_ID, API_HASH)
+telethn = TelegramClient("SerroToBot", API_ID, API_HASH)
 dispatcher = updater.dispatcher
 
 SUDO_USERS = list(SUDO_USERS) + list(DEV_USERS)
@@ -179,14 +180,14 @@ DEV_USERS = list(DEV_USERS)
 WHITELIST_USERS = list(WHITELIST_USERS)
 SUPPORT_USERS = list(SUPPORT_USERS)
 
-# Load at end to ensure all prev variables have been set
+# Bütün əvvəlki dəyişənlərin təyin olunduğundan əmin olmaq üçün sonunda yükləyin
 from AstrakoBot.modules.helper_funcs.handlers import (
     CustomCommandHandler,
     CustomMessageHandler,
     CustomRegexHandler,
 )
 
-# make sure the regex handler can take extra kwargs
+# əmin olun ki, regex işləyicisi əlavə kvarqlar ala bilər
 tg.RegexHandler = CustomRegexHandler
 tg.CommandHandler = CustomCommandHandler
 tg.MessageHandler = CustomMessageHandler
