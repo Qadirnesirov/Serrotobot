@@ -4,7 +4,7 @@ import re
 from sys import argv
 from typing import Optional
 
-from AstrakoBot import (
+from SerroToBot import (
     ALLOW_EXCL,
     CERT_PATH,
     DONATION_LINK,
@@ -22,12 +22,13 @@ from AstrakoBot import (
     updater,
     DROP_UPDATES,
 )
+# Reponu oğrlayıb oz adna çıxardan peyserdi
+# modulları dinamik yükləmək üçün lazımdır
+# QEYD: Modul sifarişinə zəmanət verilmir, bunu konfiqurasiya faylında qeyd edin!
 
-# needed to dynamically load modules
-# NOTE: Module order is not guaranteed, specify that in the config file!
-from AstrakoBot.modules import ALL_MODULES
-from AstrakoBot.modules.helper_funcs.chat_status import is_user_admin
-from AstrakoBot.modules.helper_funcs.misc import paginate_modules
+from SerroToBot.modules import ALL_MODULES
+from SerroToBot.modules.helper_funcs.chat_status import is_user_admin
+from SerroToBot.modules.helper_funcs.misc import paginate_modules
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Update
 from telegram.error import (
     BadRequest,
@@ -74,37 +75,35 @@ def get_readable_time(seconds: int) -> str:
 
 
 PM_START_TEXT = """
-Hi {}, my name is {}! 
-I am a modular group management bot.
-
-You can find my list of available commands with /help.
+Salam mənim adım {}! Mən modul qrup idarəetmə botuyam.
+Mövcud əmrlər siyahısımı ilə tapa bilərsini /help.
 """
 
 HELP_STRINGS = """
-Hey there! My name is *{}*.
-I'm a modular group management bot and help admins to manage their groups. Have a look at the following for an idea of some of \
-the things I can help you with.
+Salam! Mənim adım *{}*.
+Mən modul qrup idarəetmə botuyam və adminlərə qruplarını idarə etməkdə kömək edirəm. Bəziləri haqqında fikir əldə etmək üçün aşağıdakılara nəzər salın.
+sizə kömək edə biləcəyim şeylər.
 
-*Main* commands available:
- • /help: PM's you this message.
- • /help <module name>: PM's you info about that module.
- • /donate: information on how to donate!
+*Əsas* əmrlər mövcuddur:
+ • /help: Bu mesajı PM göndərin.
+ • /help <module name>: Bu mesajı PM göndər.
+ • /donate: ianə vermək haqqında məlumat!
  • /settings:
-   • in PM: will send you your settings for all supported modules.
-   • in a group: will redirect you to pm, with all that chat's settings.
+   • PM-də: bütün dəstəklənən modullar üçün parametrlərinizi sizə göndərəcək. 
+   • qrupda: bütün söhbət parametrləri ilə sizi pm-ə yönləndirəcək.
 {}
-And the following:
+Və aşağıdakılar:
 """.format(
     dispatcher.bot.first_name,
-    "" if not ALLOW_EXCL else "\nAll commands can either be used with / or !.\n",
+    "" if not ALLOW_EXCL else "\n Bütün əmrlər ya / və ya !.\n",
 )
 
-ASTRAKOBOT_IMG = "https://i.imgur.com/1oah5E2.jpg"
+ASTRAKOBOT_IMG = "https://telegra.ph/file/a3892a4d225528e18df6a.jpg"
 
-DONATE_STRING = """Heya, glad to hear you want to donate!
-AstrakoBot is hosted on its own server and doesn't require any donations as of now but \
-You can donate to the original writer of the Base code, Paul
-There are two ways of supporting him; [PayPal](paypal.me/PaulSonOfLars), or [Monzo](monzo.me/paulnionvestergaardlarsen)."""
+DONATE_STRING = """Hey, ianə vermək istədiyinizi eşitməyə şadam!
+SerroToBot öz serverində yerləşdirilib və hazırda heç bir ianə tələb etmir \
+Siz Baza kodunun orijinal müəllifi oToBoToWNeR ianə verə bilərsiniz
+Onu dəstəkləməyin iki yolu var; Sadece reponu oğrlamamaq ve botu şikayet etməmək """
 
 IMPORTED = {}
 MIGRATEABLE = []
@@ -119,14 +118,14 @@ USER_SETTINGS = {}
 GDPR = []
 
 for module_name in ALL_MODULES:
-    imported_module = importlib.import_module("AstrakoBot.modules." + module_name)
+    imported_module = importlib.import_module("SerroToBot.modules." + module_name)
     if not hasattr(imported_module, "__mod_name__"):
         imported_module.__mod_name__ = imported_module.__name__
 
     if imported_module.__mod_name__.lower() not in IMPORTED:
         IMPORTED[imported_module.__mod_name__.lower()] = imported_module
     else:
-        raise Exception("Can't have two modules with the same name! Please change one")
+        raise Exception("Eyni ada malik iki modul ola bilməz! Zəhmət olmasa birini dəyişdirin")
 
     if hasattr(imported_module, "__help__") and imported_module.__help__:
         HELPABLE[imported_module.__mod_name__.lower()] = imported_module
@@ -171,9 +170,9 @@ def send_help(chat_id, text, keyboard=None):
 
 
 def test(update: Update, context: CallbackContext):
-    # pprint(eval(str(update)))
-    # update.effective_message.reply_text("Hola tester! _I_ *have* `markdown`", parse_mode=ParseMode.MARKDOWN)
-    update.effective_message.reply_text("This person edited a message")
+   # pprint(qiymətləndirmə(str(yeniləmə))) 
+   # update.effective_message.reply_text("Hələ tester! _Məndə* `markdown` var", parse_mode=ParseMode.MARKDOWN)
+    update.effective_message.reply_text("Bu şəxs mesajı redaktə etdi")
     print(update.effective_message)
 
 
@@ -223,7 +222,7 @@ def start(update: Update, context: CallbackContext):
                     [
                         [
                             InlineKeyboardButton(
-                                text="Add AstrakoBot to your group",
+                                text="Add SerroToBot to your group",
                                 url="t.me/{}?startgroup=true".format(
                                     context.bot.username
                                 ),
@@ -232,25 +231,25 @@ def start(update: Update, context: CallbackContext):
                         [
                             InlineKeyboardButton(
                                 text="Support Group",
-                                url=f"https://t.me/AstrakoBotSupport",
+                                url=f"https://t.me/otobotsport",
                             ),
                         ],
                         [
                             InlineKeyboardButton(
                                 text="Getting started guide",
-                                url="https://t.me/OnePunchUpdates/29",
+                                url="https://t.me/otobotowner",
                             )
                         ],
                         [
                             InlineKeyboardButton(
                                 text="Source code",
-                                url="https://github.com/Astrako/AstrakoBot",
+                                url="https://github.com/nesirovqadir02",
                             )
                         ],
                         [
                             InlineKeyboardButton(
-                                text="Recommended federation",
-                                url="https://t.me/ALTF4Fed",
+                                text="Tövsiyə olunan federasiya",
+                                url="https://t.me/otobot",
                             )
                         ],
                     ]
@@ -258,14 +257,14 @@ def start(update: Update, context: CallbackContext):
             )
     else:
         update.effective_message.reply_text(
-            "I'm awake already!\n<b>Haven't slept since:</b> <code>{}</code>".format(
+            "Mən artıq oyaqam!\n<b>O vaxtdan bəri yatmamışam:</b> <code>{}</code>".format(
                 uptime
             ),
             parse_mode=ParseMode.HTML,
         )
 
 
-# for test purposes
+# test məqsədləri üçün
 def error_callback(update: Update, context: CallbackContext):
     error = context.error
     try:
@@ -273,26 +272,26 @@ def error_callback(update: Update, context: CallbackContext):
     except Unauthorized:
         print("no nono1")
         print(error)
-        # remove update.message.chat_id from conversation list
+        # update.message.chat_id-i söhbət siyahısından silin
     except BadRequest:
         print("no nono2")
         print("BadRequest caught")
         print(error)
 
-        # handle malformed requests - read more below!
+        # qüsurlu sorğuları idarə edin - aşağıda daha ətraflı oxuyun!
     except TimedOut:
         print("no nono3")
-        # handle slow connection problems
+        # yavaş əlaqə problemlərini həll edin
     except NetworkError:
         print("no nono4")
-        # handle other connection problems
+        # digər əlaqə problemlərini həll edin
     except ChatMigrated as err:
         print("no nono5")
         print(err)
-        # the chat_id of a group has changed, use e.new_chat_id instead
+        # qrupun chat_id-i dəyişdi, əvəzinə e.new_chat_id istifadə edin
     except TelegramError:
         print(error)
-        # handle all other telegram related errors
+        # bütün digər teleqramla əlaqəli səhvləri idarə edin
 
 
 def help_button(update: Update, context: CallbackContext):
@@ -308,7 +307,7 @@ def help_button(update: Update, context: CallbackContext):
         if mod_match:
             module = mod_match.group(1)
             text = (
-                "Here is the help for the *{}* module:\n".format(
+                "Budur *{}* modulu üçün yardım:\n".format(
                     HELPABLE[module].__mod_name__
                 )
                 + HELPABLE[module].__help__
@@ -318,7 +317,7 @@ def help_button(update: Update, context: CallbackContext):
                 parse_mode=ParseMode.MARKDOWN,
                 disable_web_page_preview=True,
                 reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton(text="Back", callback_data="help_back")]]
+                    [[InlineKeyboardButton(text="Geri", callback_data="kömək_geri")]]
                 ),
             )
 
@@ -328,7 +327,7 @@ def help_button(update: Update, context: CallbackContext):
                 text=HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(curr_page - 1, HELPABLE, "help")
+                    paginate_modules(curr_page - 1, HELPABLE, "kömək")
                 ),
             )
 
@@ -338,7 +337,7 @@ def help_button(update: Update, context: CallbackContext):
                 text=HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(next_page + 1, HELPABLE, "help")
+                    paginate_modules(next_page + 1, HELPABLE, "kömək")
                 ),
             )
 
@@ -347,11 +346,11 @@ def help_button(update: Update, context: CallbackContext):
                 text=HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(0, HELPABLE, "help")
+                    paginate_modules(0, HELPABLE, "kömək")
                 ),
             )
 
-        # ensure no spinny white circle
+        # fırlanan ağ dairənin olmamasına əmin olun
         context.bot.answer_callback_query(query.id)
         # query.message.delete()
 
@@ -360,7 +359,7 @@ def help_button(update: Update, context: CallbackContext):
 
 
 def get_help(update: Update, context: CallbackContext):
-    chat = update.effective_chat  # type: Optional[Chat]
+    chat = update.effective_chat  # Növ: Könüllü[Söhbət]
     args = update.effective_message.text.split(None, 1)
 
     # ONLY send help in PM
@@ -368,12 +367,12 @@ def get_help(update: Update, context: CallbackContext):
         if len(args) >= 2 and any(args[1].lower() == x for x in HELPABLE):
             module = args[1].lower()
             update.effective_message.reply_text(
-                f"Contact me in PM to get help of {module.capitalize()}",
+                f"Kömək üçün PM ilə əlaqə saxlayın {module.capitalize()}",
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
                             InlineKeyboardButton(
-                                text="Help",
+                                text="Kömək",
                                 url="t.me/{}?start=ghelp_{}".format(
                                     context.bot.username, module
                                 ),
@@ -384,12 +383,12 @@ def get_help(update: Update, context: CallbackContext):
             )
             return
         update.effective_message.reply_text(
-            "Contact me in PM to get the list of possible commands.",
+            "Mümkün əmrlərin siyahısını əldə etmək üçün PM-də mənimlə əlaqə saxlayın.",
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
                         InlineKeyboardButton(
-                            text="Help",
+                            text="kömək",
                             url="t.me/{}?start=help".format(context.bot.username),
                         )
                     ]
@@ -401,7 +400,7 @@ def get_help(update: Update, context: CallbackContext):
     elif len(args) >= 2 and any(args[1].lower() == x for x in HELPABLE):
         module = args[1].lower()
         text = (
-            "Here is the available help for the *{}* module:\n".format(
+            "üçün mövcud yardım budur *{}* module:\n".format(
                 HELPABLE[module].__mod_name__
             )
             + HELPABLE[module].__help__
@@ -410,7 +409,7 @@ def get_help(update: Update, context: CallbackContext):
             chat.id,
             text,
             InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="Back", callback_data="help_back")]]
+                [[InlineKeyboardButton(text="geri", callback_data="kömək_geri")]]
             ),
         )
 
@@ -427,14 +426,14 @@ def send_settings(chat_id, user_id, user=False):
             )
             dispatcher.bot.send_message(
                 user_id,
-                "These are your current settings:" + "\n\n" + settings,
+                "Bunlar cari parametrlərinizdir:" + "\n\n" + settings,
                 parse_mode=ParseMode.MARKDOWN,
             )
 
         else:
             dispatcher.bot.send_message(
                 user_id,
-                "Seems like there aren't any user specific settings available :'(",
+                "Görünür, hər hansı bir istifadəçi üçün xüsusi parametrlər mövcud deyil :'(",
                 parse_mode=ParseMode.MARKDOWN,
             )
 
@@ -443,18 +442,18 @@ def send_settings(chat_id, user_id, user=False):
             chat_name = dispatcher.bot.getChat(chat_id).title
             dispatcher.bot.send_message(
                 user_id,
-                text="Which module would you like to check {}'s settings for?".format(
+                text="{} parametrlərini hansı modul üçün yoxlamaq istərdiniz?".format(
                     chat_name
                 ),
                 reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(0, CHAT_SETTINGS, "stngs", chat=chat_id)
+                    paginate_modules(0, CHAT_SETTINGS, "settings", chat=chat_id)
                 ),
             )
         else:
             dispatcher.bot.send_message(
                 user_id,
-                "Seems like there aren't any chat settings available :'(\nSend this "
-                "in a group chat you're admin in to find its current settings!",
+                "Deyəsən heç bir söhbət parametri mövcud deyil :'(\nBunu göndər"
+                "qrup çatında onun cari parametrlərini tapmaq üçün adminsiniz!",
                 parse_mode=ParseMode.MARKDOWN,
             )
 
@@ -463,16 +462,16 @@ def settings_button(update: Update, context: CallbackContext):
     query = update.callback_query
     user = update.effective_user
     bot = context.bot
-    mod_match = re.match(r"stngs_module\((.+?),(.+?)\)", query.data)
-    prev_match = re.match(r"stngs_prev\((.+?),(.+?)\)", query.data)
-    next_match = re.match(r"stngs_next\((.+?),(.+?)\)", query.data)
-    back_match = re.match(r"stngs_back\((.+?)\)", query.data)
+    mod_match = re.match(r"settings_module\((.+?),(.+?)\)", query.data)
+    prev_match = re.match(r"settings_prev\((.+?),(.+?)\)", query.data)
+    next_match = re.match(r"settings_next\((.+?),(.+?)\)", query.data)
+    back_match = re.match(r"settings_back\((.+?)\)", query.data)
     try:
         if mod_match:
             chat_id = mod_match.group(1)
             module = mod_match.group(2)
             chat = bot.get_chat(chat_id)
-            text = "*{}* has the following settings for the *{}* module:\n\n".format(
+            text = "*{}* üçün aşağıdakı parametrlərə malikdir *{}* module:\n\n".format(
                 escape_markdown(chat.title), CHAT_SETTINGS[module].__mod_name__
             ) + CHAT_SETTINGS[module].__chat_settings__(chat_id, user.id)
             query.message.reply_text(
@@ -482,8 +481,8 @@ def settings_button(update: Update, context: CallbackContext):
                     [
                         [
                             InlineKeyboardButton(
-                                text="Back",
-                                callback_data="stngs_back({})".format(chat_id),
+                                text="geri",
+                                callback_data="settings_back({})".format(chat_id),
                             )
                         ]
                     ]
@@ -495,11 +494,11 @@ def settings_button(update: Update, context: CallbackContext):
             curr_page = int(prev_match.group(2))
             chat = bot.get_chat(chat_id)
             query.message.reply_text(
-                "Hi there! There are quite a few settings for {} - go ahead and pick what "
-                "you're interested in.".format(chat.title),
+                "salam! {} üçün kifayət qədər parametrlər var - davam edin və nəyi seçin"
+                "maraqlanırsınız.".format(chat.title),
                 reply_markup=InlineKeyboardMarkup(
                     paginate_modules(
-                        curr_page - 1, CHAT_SETTINGS, "stngs", chat=chat_id
+                        curr_page - 1, CHAT_SETTINGS, "settings", chat=chat_id
                     )
                 ),
             )
@@ -509,11 +508,11 @@ def settings_button(update: Update, context: CallbackContext):
             next_page = int(next_match.group(2))
             chat = bot.get_chat(chat_id)
             query.message.reply_text(
-                "Hi there! There are quite a few settings for {} - go ahead and pick what "
-                "you're interested in.".format(chat.title),
+                "salam! {} üçün kifayət qədər parametrlər var - davam edin və nəyi seçin"
+                "maraqlanırsınız.".format(chat.title),
                 reply_markup=InlineKeyboardMarkup(
                     paginate_modules(
-                        next_page + 1, CHAT_SETTINGS, "stngs", chat=chat_id
+                        next_page + 1, CHAT_SETTINGS, "settings", chat=chat_id
                     )
                 ),
             )
@@ -522,11 +521,11 @@ def settings_button(update: Update, context: CallbackContext):
             chat_id = back_match.group(1)
             chat = bot.get_chat(chat_id)
             query.message.reply_text(
-                text="Hi there! There are quite a few settings for {} - go ahead and pick what "
+                text="salam! {} üçün kifayət qədər parametrlər var - davam edin və nəyi seçin"
                 "you're interested in.".format(escape_markdown(chat.title)),
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(0, CHAT_SETTINGS, "stngs", chat=chat_id)
+                    paginate_modules(0, CHAT_SETTINGS, "settings", chat=chat_id)
                 ),
             )
 
@@ -535,11 +534,11 @@ def settings_button(update: Update, context: CallbackContext):
         query.message.delete()
     except BadRequest as excp:
         if excp.message not in [
-            "Message is not modified",
-            "Query_id_invalid",
-            "Message can't be deleted",
+            "Mesaj dəyişdirilməyib",
+            "Sorğu_id_etibarsız",
+            "Mesaj silinə bilməz",
         ]:
-            LOGGER.exception("Exception in settings buttons. %s", str(query.data))
+            LOGGER.exception("Parametrlər düymələrində istisna. %s", str(query.data))
 
 
 def get_settings(update: Update, context: CallbackContext):
@@ -550,7 +549,7 @@ def get_settings(update: Update, context: CallbackContext):
     # ONLY send settings in PM
     if chat.type != chat.PRIVATE:
         if is_user_admin(chat, user.id):
-            text = "Click here to get this chat's settings, as well as yours."
+            text = "Bu söhbətin, eləcə də sizin ayarlarınızı əldə etmək üçün bura klikləyin."
             msg.reply_text(
                 text,
                 reply_markup=InlineKeyboardMarkup(
@@ -567,7 +566,7 @@ def get_settings(update: Update, context: CallbackContext):
                 ),
             )
         else:
-            text = "Click here to check your settings."
+            text = "Parametrlərinizi yoxlamaq üçün bura klikləyin."
 
     else:
         send_settings(chat.id, user.id, True)
@@ -584,7 +583,7 @@ def donate(update: Update, context: CallbackContext):
 
         if OWNER_ID != 254318997 and DONATION_LINK:
             update.effective_message.reply_text(
-                "You can also donate to the person currently running me "
+                "Hazırda məni idarə edən şəxsə də ianə verə bilərsiniz"
                 "[here]({})".format(DONATION_LINK),
                 parse_mode=ParseMode.MARKDOWN,
             )
@@ -599,11 +598,11 @@ def donate(update: Update, context: CallbackContext):
             )
 
             update.effective_message.reply_text(
-                "I've PM'ed you about donating to my creator!"
+                "Yaradanıma ianə verməklə bağlı sizə PM göndərdim!"
             )
         except Unauthorized:
             update.effective_message.reply_text(
-                "Contact me in PM first to get donation information."
+                "İanə haqqında məlumat almaq üçün əvvəlcə mənimlə PM-də əlaqə saxlayın."
             )
 
 
@@ -618,11 +617,11 @@ def migrate_chats(update: Update, context: CallbackContext):
     else:
         return
 
-    LOGGER.info("Migrating from %s, to %s", str(old_chat), str(new_chat))
+    LOGGER.info("%s-dən bu yerə köçür %s", str(old_chat), str(new_chat))
     for mod in MIGRATEABLE:
         mod.__migrate__(old_chat, new_chat)
 
-    LOGGER.info("Successfully migrated!")
+    LOGGER.info("Uğurla köçdü!")
     raise DispatcherHandlerStop
 
 
@@ -651,7 +650,7 @@ def main():
     dispatcher.add_error_handler(error_callback)
 
     if WEBHOOK:
-        LOGGER.info("Using webhooks.")
+        LOGGER.info("Veb kancalardan istifadə.")
         updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
 
         if CERT_PATH:
@@ -660,7 +659,7 @@ def main():
             updater.bot.set_webhook(url=URL + TOKEN)
 
     else:
-        LOGGER.info("Using long polling.")
+        LOGGER.info("Uzun sorğudan istifadə.")
         allowed_updates = ['message', 'edited_message', 'callback_query', 'callback_query', 'my_chat_member',
                            'chat_member', 'chat_join_request', 'channel_post', 'edited_channel_post', 'inline_query']
         updater.start_polling(timeout=15, read_latency=4, drop_pending_updates=DROP_UPDATES, allowed_updates = allowed_updates)
@@ -671,6 +670,6 @@ def main():
 
 
 if __name__ == "__main__":
-    LOGGER.info("Successfully loaded modules: " + str(ALL_MODULES))
+    LOGGER.info("Uğurla yüklənmiş modullar:" + str(ALL_MODULES))
     telethn.start(bot_token=TOKEN)
     main()
