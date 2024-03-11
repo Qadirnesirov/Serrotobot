@@ -20,7 +20,7 @@ class FloodControl(BASE):
         self.chat_id = str(chat_id)  # ensure string
 
     def __repr__(self):
-        return "<flood control for %s>" % self.chat_id
+        return "<%s üçün daşqına nəzarət>" % self.chat_id
 
 
 class FloodSettings(BASE):
@@ -35,7 +35,7 @@ class FloodSettings(BASE):
         self.value = value
 
     def __repr__(self):
-        return "<{} will executing {} for flood.>".format(self.chat_id, self.flood_type)
+        return "<{} daşqın üçün {} icra edəcək.>".format(self.chat_id, self.flood_type)
 
 
 FloodControl.__table__.create(checkfirst=True)
@@ -66,19 +66,23 @@ def update_flood(chat_id: str, user_id) -> bool:
     if str(chat_id) in CHAT_FLOOD:
         curr_user_id, count, limit = CHAT_FLOOD.get(str(chat_id), DEF_OBJ)
 
-        if limit == 0:  # no antiflood
+        if limit == 0:  
+          # daşqına qarşı yox
             return False
 
-        if user_id != curr_user_id or user_id is None:  # other user
+        if user_id != curr_user_id or user_id is None: 
+          # digər istifadəçi
             CHAT_FLOOD[str(chat_id)] = (user_id, DEF_COUNT, limit)
             return False
 
         count += 1
-        if count > limit:  # too many msgs, kick
+        if count > limit: 
+          # həddən artıq çox mesaj, vuruş
+          
             CHAT_FLOOD[str(chat_id)] = (None, DEF_COUNT, limit)
             return True
 
-        # default -> update
+        # default -> yeniləmə
         CHAT_FLOOD[str(chat_id)] = (user_id, count, limit)
         return False
 
