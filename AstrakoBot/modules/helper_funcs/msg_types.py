@@ -1,6 +1,6 @@
 from enum import IntEnum, unique
 
-from AstrakoBot.modules.helper_funcs.string_handling import button_markdown_parser
+from SerroToBot.modules.helper_funcs.string_handling import button_markdown_parser
 from telegram import Message
 
 
@@ -21,15 +21,16 @@ def get_note_type(msg: Message):
     content = None
     text = ""
     raw_text = msg.text or msg.caption
-    args = raw_text.split(None, 2)  # use python's maxsplit to separate cmd and args
+    args = raw_text.split(None, 2)  
+    # cmd və argları ayırmaq üçün python-un maxsplit-indən istifadə edin
     note_name = args[1]
 
     buttons = []
-    # determine what the contents of the filter are - text, image, sticker, etc
+    # filtrin məzmununun nə olduğunu müəyyənləşdirin - mətn, şəkil, stiker və s
     if len(args) >= 3:
         offset = len(args[2]) - len(
             raw_text
-        )  # set correct offset relative to command + notename
+        )  # əmr + qeyd adına nisbətən düzgün ofset təyin edin
         text, buttons = button_markdown_parser(
             args[2],
             entities=msg.parse_entities() or msg.parse_caption_entities(),
@@ -60,7 +61,8 @@ def get_note_type(msg: Message):
             data_type = Types.DOCUMENT
 
         elif msg.reply_to_message.photo:
-            content = msg.reply_to_message.photo[-1].file_id  # last elem = best quality
+            content = msg.reply_to_message.photo[-1].file_id  
+            # son element = ən yaxşı keyfiyyət
             text, buttons = button_markdown_parser(msgtext, entities=entities)
             data_type = Types.PHOTO
 
@@ -82,7 +84,7 @@ def get_note_type(msg: Message):
     return note_name, text, data_type, content, buttons
 
 
-# note: add own args?
+# qeyd: öz arqumentlərini əlavə edin?
 def get_welcome_type(msg: Message):
     data_type = None
     content = None
@@ -112,7 +114,8 @@ def get_welcome_type(msg: Message):
         data_type = Types.DOCUMENT
 
     elif msg.reply_to_message and msg.reply_to_message.photo:
-        content = msg.reply_to_message.photo[-1].file_id  # last elem = best quality
+        content = msg.reply_to_message.photo[-1].file_id  
+        # son element = ən yaxşı keyfiyyət
         text = msg.reply_to_message.caption
         data_type = Types.PHOTO
 
@@ -137,19 +140,20 @@ def get_welcome_type(msg: Message):
         data_type = Types.VIDEO_NOTE
 
     buttons = []
-    # determine what the contents of the filter are - text, image, sticker, etc
+    # filtrin məzmununun nə olduğunu müəyyənləşdirin - mətn, şəkil, stiker və s
     if args:
         if msg.reply_to_message:
             argumen = (
                 msg.reply_to_message.caption if msg.reply_to_message.caption else ""
             )
-            offset = 0  # offset is no need since target was in reply
+            offset = 0  
+            # Hədəf cavabda olduğundan ofsetə ehtiyac yoxdur
             entities = msg.reply_to_message.parse_entities()
         else:
             argumen = args[1]
             offset = len(argumen) - len(
                 msg.text
-            )  # set correct offset relative to command + notename
+            )  # əmr + qeyd adına nisbətən düzgün ofset təyin edin
             entities = msg.parse_entities()
         text, buttons = button_markdown_parser(
             argumen, entities=entities, offset=offset
