@@ -29,7 +29,7 @@ def getReleaseData(repoData, index):
         return None
 
 
-# Release-wise stuff
+# Buraxılış-müdrik şeylər
 
 
 def getAuthor(releaseData):
@@ -74,13 +74,16 @@ def getAssets(releaseData):
     return releaseData["assets"]
 
 
-def getBody(releaseData):  # changelog stuff
+def getBody(releaseData):  
+  
+  # dəyişiklik qeydləri
+  
     if releaseData is None:
         return None
     return releaseData["body"]
 
 
-# Asset-wise stuff
+# Əmlak baxımından
 
 
 def getReleaseFileName(asset):
